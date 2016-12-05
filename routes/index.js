@@ -1,3 +1,4 @@
+var mq_client = require('../rpc/client');
 var express       = require('express');
 var router        = express.Router();
 var mysql         = require('../utils/dao');
@@ -27,10 +28,10 @@ var lineReader    = require('line-reader');
 /* GET home page. */
 router.get('/', (req, res, next) => {
 	cache.fetchItem('user', 1, (userID, callback) => {
-		console.log('----------------------Missed Logic!!!---------------------------');
+//		//console.log('----------------------Missed Logic!!!---------------------------');
 		callback('Keyur Golani');
 	}, (result) => {
-		console.log('----------------------Process Result!!!---------------------------');
+//		//console.log('----------------------Process Result!!!---------------------------');
 		res.render('index', {
 			title : result
 		});
@@ -108,13 +109,13 @@ router.post('/addListing', (req, res, next) => {
 										'listing_id' : listing_insert_result.insertId
 									}, function(error, result) {
 										if (error) {
-											console.log("error in update of listing!");
+//											//console.log("error in update of listing!");
 	
 										} else {
 											if (result.affectedRows === 1) {
-												console.log("success in update of listing!")
+//												//console.log("success in update of listing!")
 											} else {
-												console.log("error in update of listing!");
+//												//console.log("error in update of listing!");
 											}
 										}
 									});
@@ -131,11 +132,11 @@ router.post('/addListing', (req, res, next) => {
 	
 										mysql.executeQuery(query, parameters, function(error, winner) {
 											if (error) {
-												console.log('error', error);
+//												//console.log('error', error);
 											} else {
 												if (winner && winner.length > 0) {
 	
-													console.log("highest bidder is selected");
+//													//console.log("highest bidder is selected");
 	
 													//update trip_details and bid_details
 	
@@ -151,7 +152,7 @@ router.post('/addListing', (req, res, next) => {
 													}, (error, trip) => {
 	
 														if (error) {
-															console.log(error);
+//															//console.log(error);
 														} else {
 															var receipt_id = utility.generateReceiptNo(10);												
 															
@@ -161,17 +162,17 @@ router.post('/addListing', (req, res, next) => {
 																'receipt_id' : receipt_id,
 																'cc_id' : winner[0].cc_id
 															}, (error, results) => {
-																console.log('error, results', error, results);
+//																//console.log('error, results', error, results);
 																if (error) {
-																	console.log(error);
+																	//console.log(error);
 																} else {
-																	console.log("highest bidder is selected and got the property to stay.");
+																	//console.log("highest bidder is selected and got the property to stay.");
 																}
 															})
 														}
 													})
 												} else {
-													console.log("No bidder is awarded for the selected property");											
+													//console.log("No bidder is awarded for the selected property");											
 												}
 											}
 										})
@@ -306,7 +307,7 @@ router.post('/register', function(req, res, next) {
 						'secret' : bcrypt.hashSync(secret, salt),
 						'salt' : salt
 					}, (error, account_result) => {
-						console.log('error, account_result', error, account_result);
+						//console.log('error, account_result', error, account_result);
 						if (error) {
 							res.send({
 								'statusCode' : 500
@@ -319,7 +320,7 @@ router.post('/register', function(req, res, next) {
 									'day' : req.body.day,
 									'year' : req.body.year
 								}, (error, profile_result) => {
-									console.log('error, profile_result', error, profile_result);
+									//console.log('error, profile_result', error, profile_result);
 									if (error) {
 										res.send({
 											'statusCode' : 500
@@ -330,7 +331,7 @@ router.post('/register', function(req, res, next) {
 												'user_id' : account_result.insertId,
 												'user_agent' : req.body.user_agent.os + ' ' + req.body.user_agent.os_version + ' - ' + req.body.user_agent.browser + ' ' + req.body.user_agent.browser_version
 											}, (error, result) => {
-												console.log('error, result', error, result);
+												//console.log('error, result', error, result);
 												res.send({
 													'statusCode' : 200
 												});
@@ -369,7 +370,7 @@ router.get('/auth/facebook', function(req, res, next) {
 // Post Authentication Logic
 router.get('/auth/facebook/callback', passport.authenticate('facebook', (error, userObject, req) => {
 	if (error) {
-		console.log("Redirecting to homepage!");
+		//console.log("Redirecting to homepage!");
 		req.res.redirect('/');
 	} else {
 		if (userObject) {
@@ -377,8 +378,8 @@ router.get('/auth/facebook/callback', passport.authenticate('facebook', (error, 
 				'user_id' : userObject.user_id,
 				'user_agent' : req.session.user_agent.os + ' ' + req.session.user_agent.os_version + ' - ' + req.session.user_agent.browser + ' ' + req.session.user_agent.browser_version
 			}, (error, result) => {
-				console.log('error, result', error, result);
-				console.log("Redirecting to homepage!");
+				//console.log('error, result', error, result);
+				//console.log("Redirecting to homepage!");
 				req.res.redirect('/');
 			});
 		}
@@ -398,9 +399,9 @@ router.get('/auth/google', function(req, res, next) {
 //Post Authentication Logic
 router.get('/auth/google/callback', passport.authenticate('google', (error, userObject, req) => {
 
-	console.log(userObject);
+	//console.log(userObject);
 	if (error) {
-		console.log(error);
+		//console.log(error);
 	//     req.res.redirect('/');
 	} else {
 		if (userObject) {
@@ -436,7 +437,7 @@ router.post('/updateProfile', (req, res, next) => {
 				}, {
 					"user_id" : req.session.loggedInUser.user_id
 				}, (error, result) => {
-					console.log('error, result', error, result);
+					//console.log('error, result', error, result);
 					if (error) {
 						throw error;
 					} else {
@@ -457,7 +458,7 @@ router.post('/updateProfile', (req, res, next) => {
 				}, {
 					"user_id" : req.session.loggedInUser.user_id
 				}, (error, result2) => {
-					console.log('error, result2', error, result2);
+					//console.log('error, result2', error, result2);
 					if (error) {
 						throw error;
 					} else {
@@ -481,7 +482,7 @@ router.post('/updateProfile', (req, res, next) => {
 router.post('/getPendingHostApprovals', (req, res, next) => {
 
 	mysql.fetchData('*', 'account_details', {'is_host' : 0}, (error, results) => {
-		console.log("error, results", error, results);
+		//console.log("error, results", error, results);
 		if (error) {
 			res.send({
 				'statusCode' : 500
@@ -509,7 +510,7 @@ router.post('/approveHost', (req, res, next) => {
 	}, {
 		"user_id" : user_id
 	}, (error, results) => {
-		console.log("error, results", error, results);
+		//console.log("error, results", error, results);
 		if (error) {
 			res.send({
 				'statusCode' : 500
@@ -553,7 +554,7 @@ router.post('/fetchRoomTypes', (req, res, next) => {
 });
 
 router.post('/changePropertyStatus', (req, res, next) => {
-	console.log("jere");
+	//console.log("jere");
 	var status;
 	var property_id = req.body.property_id;
 
@@ -563,7 +564,7 @@ router.post('/changePropertyStatus', (req, res, next) => {
 		status = 1;
 	}
 
-	console.log('status', status);
+	//console.log('status', status);
 
 	mysql.updateData('property_details', {
 		"active" : status
@@ -599,7 +600,7 @@ router.post('/changeListingStatus', (req, res, next) => {
 		status = 1;
 	}
 
-	console.log('status', status);
+	//console.log('status', status);
 
 	mysql.updateData('listings', {
 		"active" : status
@@ -635,7 +636,7 @@ router.post('/updatePassword', (req, res, next) => {
 	mysql.fetchData('secret, salt, active', 'account_details', {
 		"user_id" : user_id
 	}, (error, results) => {
-		console.log('error, results', error, results);
+		//console.log('error, results', error, results);
 		if (error) {
 			res.send({
 				'statusCode' : 500
@@ -658,7 +659,7 @@ router.post('/updatePassword', (req, res, next) => {
 						}, {
 							"user_id" : user_id
 						}, (error, results) => {
-							console.log('error, results', error, results);
+							//console.log('error, results', error, results);
 							if (error) {
 								res.send({
 									'statusCode' : 500
@@ -677,13 +678,13 @@ router.post('/updatePassword', (req, res, next) => {
 						})
 
 					} else {
-						console.log("Password is incorrect");
+						//console.log("Password is incorrect");
 						res.send({
 							'statusCode' : 500
 						});
 					}
 				} else {
-					console.log("user is no longer active!");
+					//console.log("user is no longer active!");
 					res.send({
 						'statusCode' : 500
 					});
@@ -730,7 +731,7 @@ router.post('/addCard', (req, res, next) => {
 
         if(answer){
         	mysql.insertData('card_details', JSON_OBJ, (error, results) => {
-				console.log('error, results', error, results);
+				//console.log('error, results', error, results);
 				if (error) {
 					res.send({
 						'statusCode' : 500
@@ -749,7 +750,7 @@ router.post('/addCard', (req, res, next) => {
 				}
 			})
         }else{
-        	console.log(message);
+        	//console.log(message);
         	res.send({
 				'statusCode' : 409,
 				'message' : message
@@ -909,10 +910,10 @@ router.post('/fetchUserHostings', (req, res, next) => {
 router.post('/deactivateUserAccount', (req, res, next) => {
 	if(req.session && req.session.loggedInUser) {
 		var user_id = req.session.loggedInUser.user_id;
-		console.log("user_id", user_id);
+		//console.log("user_id", user_id);
 		
 		mysql.updateData('account_details', {'active' : 0}, {'user_id' : user_id}, function(error, results) {
-			console.log("error, results", error, results);
+			//console.log("error, results", error, results);
 			if (error) {
 				res.send({
 					'statusCode' : 500
@@ -933,11 +934,11 @@ router.post('/deactivateUserAccount', (req, res, next) => {
 router.post('/adminLogin', (req, res, next) => {
 	var email = req.body.email;
 	var password = req.body.password;
-	console.log("Here");
+	//console.log("Here");
 	var query = "select * from admin_user where username = ? AND password = ?";
 	var parameters = [email, password];
 		mysql.executeQuery(query, parameters, function(error, results) {
-			console.log("error, results", error, results);
+			//console.log("error, results", error, results);
 			if (error) {
 				res.send({
 					'statusCode' : 500
@@ -1066,11 +1067,11 @@ router.post('/placeBidOnListing', function(req, res, next) {
 	var checkout = req.body.checkout;
 	var bid_amount = req.body.bid_amount;
 	var no_of_guests = req.body.guests;
-	console.log('no_of_guests', no_of_guests);
+	//console.log('no_of_guests', no_of_guests);
 	var accommodations = req.body.accommodations;
-	console.log('accommodations', accommodations);
+	//console.log('accommodations', accommodations);
 	var base_price = req.body.daily_price;
-	console.log('base_price', base_price);
+	//console.log('base_price', base_price);
 	var cc_id = req.body.cc_id;
 	//TODO Get user Id from session
 	//var userId = req.session.user.userId;
@@ -1082,7 +1083,7 @@ router.post('/placeBidOnListing', function(req, res, next) {
 
 	if (bid_amount > base_price && no_of_guests <= accommodations) {
 
-		console.log("valid bid!");
+		//console.log("valid bid!");
 
 		//update the daily_price as bid_amount in listings
 		mysql.updateData('listings', {
@@ -1090,7 +1091,7 @@ router.post('/placeBidOnListing', function(req, res, next) {
 		}, {
 			'listing_id' : listing_id
 		}, function(error, results) {
-			console.log('error, results', error, results);
+			//console.log('error, results', error, results);
 			if (error) {
 				res.send({
 					'statusCode' : 500
@@ -1107,7 +1108,7 @@ router.post('/placeBidOnListing', function(req, res, next) {
 					'no_of_guests' : no_of_guests,
 					'cc_id':cc_id
 				}, (error, results) => {
-					console.log('error, results', error, results);
+					//console.log('error, results', error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -1125,12 +1126,12 @@ router.post('/placeBidOnListing', function(req, res, next) {
 	} else {
 
 		if (bid_amount < base_price) {
-			console.log("entered bid amount is less than the listing amount");
+			//console.log("entered bid amount is less than the listing amount");
 		}
 		if (no_of_guests > accommodations) {
-			console.log("entered no. of guests are more than the listing specified!");
+			//console.log("entered no. of guests are more than the listing specified!");
 		} else {
-			console.log("you have entered bid price less than the listing price and also no. of guests are more than specified listing");
+			//console.log("you have entered bid price less than the listing price and also no. of guests are more than specified listing");
 		}
 
 		res.send({
@@ -1148,7 +1149,7 @@ router.post('/instantBook', function(req, res, next) {
 	var active = 1;
 	var trip_amount = req.body.trip_amount;
 	var cc_id = req.body.cc_id;
-	console.log('cc_id first', cc_id);
+	//console.log('cc_id first', cc_id);
 
 	var userId = req.session.loggedInUser.user_id;
 
@@ -1167,19 +1168,19 @@ router.post('/instantBook', function(req, res, next) {
 					isValid = true;
 					var checkinDate = new Date(checkin);
 					// checkinDate = checkinDate.getDate();
-					console.log('checkinDate', checkinDate);
+					//console.log('checkinDate', checkinDate);
 					
 					var checkoutDate = new Date(checkout);
 					// checkoutDate = checkoutDate.getDate();
-					console.log('checkoutDate', checkoutDate);
+					//console.log('checkoutDate', checkoutDate);
 					
 					var checkinDateDB = new Date(results[i].checkin);
 					// checkinDateDB = checkinDateDB.getDate();
-					console.log('checkinDateDB', checkinDateDB);
+					//console.log('checkinDateDB', checkinDateDB);
 					
 					var checkoutDateDB = new Date(results[i].checkout);
 					// checkoutDateDB = checkoutDateDB.getDate();
-					console.log('checkoutDateDB', checkoutDateDB);
+					//console.log('checkoutDateDB', checkoutDateDB);
 					
 
 					if (!((checkinDate > checkoutDateDB
@@ -1189,9 +1190,9 @@ router.post('/instantBook', function(req, res, next) {
 						break;
 					}
 				}
-				console.log(isValid);
+				//console.log(isValid);
 				if (isValid) {
-					console.log("valid dates are choosen");
+					//console.log("valid dates are choosen");
 					mysql.insertData('trip_details', {
 						'listing_id' : listing_id,
 						'checkin' : checkin,
@@ -1202,7 +1203,7 @@ router.post('/instantBook', function(req, res, next) {
 						'active' : active,
 						'trip_amount' : trip_amount
 					}, (error, trip) => {
-						console.log('error, trip', error, trip);
+						//console.log('error, trip', error, trip);
 
 						if (error) {
 							res.send({
@@ -1216,7 +1217,7 @@ router.post('/instantBook', function(req, res, next) {
 								'receipt_id' : receipt_id,
 								'cc_id' : cc_id
 							}, (error, results) => {
-								console.log('error, results', error, results);
+								//console.log('error, results', error, results);
 								if (error) {
 									res.send({
 										'statusCode' : 500
@@ -1238,7 +1239,7 @@ router.post('/instantBook', function(req, res, next) {
 				}
 			} else {
 
-				console.log("in else!!");
+				//console.log("in else!!");
 				mysql.insertData('trip_details', {
 					'listing_id' : listing_id,
 					'checkin' : checkin,
@@ -1249,7 +1250,7 @@ router.post('/instantBook', function(req, res, next) {
 					'active' : active,
 					'trip_amount' : trip_amount
 				}, (error, trip) => {
-					console.log('error, trip', error, trip);
+					//console.log('error, trip', error, trip);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -1261,7 +1262,7 @@ router.post('/instantBook', function(req, res, next) {
 							'receipt_id' : receipt_id,
 							'cc_id' : cc_id
 						}, (error, results) => {
-							console.log(error, results);
+							//console.log(error, results);
 							if (error) {
 								res.send({
 									'statusCode' : 500
@@ -1331,11 +1332,11 @@ router.post('/login', function(req, res, next) {
 								'statusCode' : 500
 							});
 						} else {
-							console.log("<><><><><><><><><><><><><>");
+							//console.log("<><><><><><><><><><><><><>");
 							userObject.photo = results[0];
 							userObject.video = results[1];
 							req.session.loggedInUser = userObject;
-							console.log(req.session.loggedInUser);
+							//console.log(req.session.loggedInUser);
 							res.send({
 								'statusCode' : 200
 							});
@@ -1357,7 +1358,7 @@ router.get('/property', function(req, res, next) {
 		
 		res.render('property');
 	}else{
-		console.log("in else");
+		//console.log("in else");
 		res.redirect('/');
 	}
 });
@@ -1374,7 +1375,7 @@ router.post('/check_host', function(req, res, next) {
 			} else {
 				if (results && results.length > 0) {
 
-						console.log('results[0].is_host', results[0].is_host);
+						//console.log('results[0].is_host', results[0].is_host);
 					if(results[0].is_host == 1){						
 
 						res.send({
@@ -1390,7 +1391,7 @@ router.post('/check_host', function(req, res, next) {
 		}
 		})	
 	}else{
-		console.log("not loggedin!");
+		//console.log("not loggedin!");
 		res.redirect('/');
 	}
 });
@@ -1455,8 +1456,8 @@ router.get('/searchListing', function(req, res, next) {
 
 	}else{
 		
-		// console.log("<><><><><><><><>><><>><><");
-		// console.log('daterange', daterange);
+		// //console.log("<><><><><><><><>><><>><><");
+		// //console.log('daterange', daterange);
 
 		//TODO
 		// var user_id = req.session.loggedInUser.user_id;
@@ -1523,7 +1524,7 @@ router.get('/searchListing', function(req, res, next) {
 							req.db.get('user_photos').find({
 								'user_id' : item.owner_id
 							}).then((profile_photo) => {
-								console.log(profile_photo);
+								//console.log(profile_photo);
 								results[index].profile_photo = profile_photo;
 								callback(null, null);
 							});
@@ -1578,140 +1579,180 @@ router.get('/profile', function(req, res, next) {
 	//TODO naive nested query to be written to show performance increase.
 	async.parallel([
 		function(callback) {
-			mysql.executeQuery('select account_details.user_id as user_id, f_name, l_name, email, active, phone, gender, month, day, year, city, state, description from account_details left join profile_details on account_details.user_id = profile_details.user_id where account_details.user_id = ?', [ req.query.owner ], (error, profile_details) => {
-				if (error) {
-					throw error;
+			mq_client.make_request('fetch_profile', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				if(err){
+					throw err;
 				} else {
-					console.log('profile_details', profile_details);
-					callback(null, profile_details);
-				}
-			});
-		},
-		function(callback) {
-			mysql.executeQuery('select card_id, card_number, exp_month,exp_year,cvv,first_name,last_name,postal_code,country from card_details where user_id = ?', [ req.query.owner ], (error, card_details) => {
-				if (error) {
-					throw error;
-				} else {
-					callback(null, card_details);
-				}
-			});
-		},
-		function(callback) {
-			mysql.executeQuery('select timestamp, user_agent from login_history where user_id = ?', [ req.query.owner ], (error, login_history) => {
-				if (error) {
-					throw error;
-				} else {
-					callback(null, login_history);
-				}
-			});
-		},
-		function(callback) {
-			mysql.executeQuery('select property_id, house_rules, longitude, latitude, st_address, apt, city, state, zip, active, property_type from property_details inner join property_types on property_details.property_type_id = property_types.property_type_id where owner_id = ?', [ req.query.owner ], (error, property_details) => {
-				if (error) {
-					throw error;
-				} else {
-					property_details.forEach(function(item, index, array) {
-						req.db.get('property_photos').find({
-							'property_id' : item.property_id
-						}).then((photos) => {
-							property_details[index].photos = photos;
-						});
-					});
-					callback(null, property_details);
-				}
-			});
-		},
-		function(callback) {
-			mysql.executeQuery('select listing_id, listings.property_id, title, is_bid, start_date, end_date, daily_price, listings.active as listing_active, property_details.active as property_active, room_type from listings inner join property_details on listings.property_id = property_details.property_id inner join room_types on listings.room_type_id = room_types.room_type_id where property_details.owner_id = ?', [ req.query.owner ], (error, listing_details) => {
-				if (error) {
-					throw error;
-				} else {
-					callback(null, listing_details);
-				}
-			});
-		},
-		function(callback) {
-			mysql.executeQuery('select trip_details.trip_id, title, st_address, city, state, zip, longitude, latitude, checkin, checkout, trip_amount, host_rating, host_review, receipt_id from trip_details inner join listings on listings.listing_id = trip_details.listing_id inner join property_details on listings.property_id = property_details.property_id left join ratings on ratings.trip_id = trip_details.trip_id left join bill_details on bill_details.trip_id = trip_details.trip_id where user_id = ?', [ req.query.owner ], (error, trip_details) => {
-				if (error) {
-					throw error;
-				} else {
-					if(trip_details.length === 0) {
-						callback(null, trip_details);
+					if(results.statusCode == 200){
+						callback(null, results);
+					} else {    
+						callback(null, results);
 					}
-					trip_details.forEach(function(item, index, array) {
-						req.db.get('host_review_photos').find({
-							'trip_id' : item.trip_id
-						}).then(function(docs) {
-							if(docs && docs.length > 0) {
-								trip_details[index].review_photos = docs[0].photos;
-							}
-							if(trip_details.length == index + 1) {
-								callback(null, trip_details);
-							}
-						})
-					});
-				}
+				}  
 			});
 		},
 		function(callback) {
-			mysql.executeQuery('select trip_details.trip_id, f_name, l_name, st_address, city, state, zip, checkin, checkout, no_of_guests, traveller_rating, traveller_review from account_details inner join property_details on account_details.user_id = property_details.owner_id inner join listings on listings.property_id = property_details.property_id inner join trip_details on listings.listing_id = trip_details.listing_id left join ratings on ratings.trip_id = trip_details.trip_id where account_details.user_id = ?', [ req.query.owner ], (error, hosting_details) => {
-				if (error) {
-					throw error;
+			mq_client.make_request('fetch_card_details', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				if(err){
+					throw err;
 				} else {
-					if(hosting_details.length === 0) {
-						callback(null, hosting_details);
+					if(results.statusCode == 200){
+						callback(null, results);
+					} else {    
+						callback(null, results);
 					}
-					hosting_details.forEach(function(item, index, array) {
-						req.db.get('traveller_review_photos').find({
-							'trip_id' : item.trip_id
-						}).then(function(docs) {
-							hosting_details[index].review_photos = docs.photos
-							if(hosting_details.length == index + 1) {
-								callback(null, hosting_details);
-							}
-						})
-					});
-				}
+				}  
 			});
 		},
 		function(callback) {
-			req.db.get('user_photos').findOne({
-				'user_id' : req.query.owner
-			}).then((photo) => {
-				if (photo) {
-					callback(null, photo.photo);
+			mq_client.make_request('fetch_login_history', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				//console.log("err,results", err,results);
+				if(err){
+					throw err;
 				} else {
-					callback(null, null);
-				}
+					if(results.statusCode == 200){
+						//console.log("successful registration!");
+						callback(null, results);
+					} else {    
+						//console.log("Invalid Login");
+						callback(null, results);
+					}
+				}  
 			});
 		},
 		function(callback) {
-			req.db.get('user_videos').findOne({
-				'user_id' : req.query.owner
-			}).then((video) => {
-				if (video) {
-					callback(null, video.video);
+			mq_client.make_request('fetch_properties', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				//console.log("err,results", err,results);
+				if(err){
+					throw err;
 				} else {
-					callback(null, null);
-				}
+					if(results.statusCode == 200){
+						//console.log("successful registration!");
+						callback(null, results);
+					} else {    
+						//console.log("Invalid Login");
+						callback(null, results);
+					}
+				}  
 			});
 		},
 		function(callback) {
-			mysql.executeQuery('select owner_id as user_id, avg(host_rating) as host_rating from ratings right join trip_details on ratings.trip_id = trip_details.trip_id inner join listings on listings.listing_id = trip_details.listing_id inner join property_details on listings.property_id = property_details.property_id where owner_id = ?', [ req.query.owner ], (error, hosting_rating_details) => {
-				if (error) {
-					throw error;
+			mq_client.make_request('fetch_listings', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				if(err){
+					throw err;
 				} else {
-					callback(null, hosting_rating_details);
-				}
+					if(results.statusCode == 200){
+						callback(null, results);
+					} else {    
+						callback(null, results);
+					}
+				}  
 			});
 		},
 		function(callback) {
-			mysql.executeQuery('select user_id as user_id, avg(traveller_rating) as traveller_rating from ratings right join trip_details on ratings.trip_id = trip_details.trip_id where user_id = ?', [ req.query.owner ], (error, travelling_rating_details) => {
-				if (error) {
-					throw error;
+			mq_client.make_request('fetch_trips', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				if(err){
+					throw err;
 				} else {
-					callback(null, travelling_rating_details);
-				}
+					if(results.statusCode == 200){
+						callback(null, results);
+					} else {    
+						callback(null, results);
+					}
+				}  
+			});
+		},
+		function(callback) {
+			mq_client.make_request('fetch_hostings', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				if(err){
+					throw err;
+				} else {
+					if(results.statusCode == 200){
+						callback(null, results);
+					} else {    
+						callback(null, results);
+					}
+				}  
+			});
+		},
+		function(callback) {
+			mq_client.make_request('fetch_user_photo', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				if(err){
+					throw err;
+				} else {
+					if(results.statusCode == 200){
+						callback(null, results);
+					} else {    
+						callback(null, results);
+					}
+				}  
+			});
+		},
+		function(callback) {
+			mq_client.make_request('fetch_user_video', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				if(err){
+					throw err;
+				} else {
+					if(results.statusCode == 200){
+						callback(null, results);
+					} else {    
+						callback(null, results);
+					}
+				}  
+			});
+		},
+		function(callback) {
+			mq_client.make_request('fetch_host_rating_details', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				//console.log("err,results", err,results);
+				if(err){
+					throw err;
+				} else {
+					if(results.statusCode == 200){
+						//console.log("successful registration!");
+						callback(null, results);
+					} else {    
+						//console.log("Invalid Login");
+						callback(null, results);
+					}
+				}  
+			});
+		},
+		function(callback) {
+			mq_client.make_request('fetch_traveller_rating_details', {
+				'payload' : req.query.owner
+			}, function(err,results){
+				//console.log("err,results", err,results);
+				if(err){
+					throw err;
+				} else {
+					if(results.statusCode == 200){
+						//console.log("successful registration!");
+						callback(null, results);
+					} else {    
+						//console.log("Invalid Login");
+						callback(null, results);
+					}
+				}  
 			});
 		}
 	], function(error, results) {
@@ -1727,7 +1768,7 @@ router.get('/profile', function(req, res, next) {
 router.get('/getBill', function(req, res, next) {
 	if (req.query && req.query.receipt) {
 		mysql.executeQuery('select * from bill_details, trip_details, card_details, account_details, listings inner join room_types on listings.room_type_id = room_types.room_type_id, property_details inner join property_types on property_details.property_type_id = property_types.property_type_id where receipt_id = ? and trip_details.trip_id = bill_details.trip_id and bill_details.cc_id = card_details.card_id and trip_details.user_id = account_details.user_id and trip_details.listing_id = listings.listing_id and listings.property_id = property_details.property_id;', [ req.query.receipt ], (error, results) => {
-			console.log(error, results);
+			//console.log(error, results);
 			barcode('code128', {
 				data : "http://localhost:3000/getBill?receipt=" + results[0].receipt_id,
 				width : 566,
@@ -2035,7 +2076,7 @@ router.post('/updateRating', (req, res, next) => {
 					'host_rating' : req.body.rating,
 					'trip_id' : req.body.trip
 				}, (error, results) => {
-					console.log(error, results);
+					//console.log(error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -2057,7 +2098,7 @@ router.post('/updateRating', (req, res, next) => {
 					'traveller_rating' : req.body.rating,
 					'trip_id' : req.body.trip
 				}, (error, results) => {
-					console.log(error, results);
+					//console.log(error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -2082,7 +2123,7 @@ router.post('/updateRating', (req, res, next) => {
 				}, {
 					'trip_id' : req.body.trip
 				}, (error, results) => {
-					console.log(error, results);
+					//console.log(error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -2105,7 +2146,7 @@ router.post('/updateRating', (req, res, next) => {
 				}, {
 					'trip_id' : req.body.trip
 				}, (error, results) => {
-					console.log(error, results);
+					//console.log(error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -2163,7 +2204,7 @@ router.post('/updateReview', (req, res, next) => {
 					'traveller_review' : req.body.review,
 					'trip_id' : req.body.trip
 				}, (error, results) => {
-					console.log(error, results);
+					//console.log(error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -2193,7 +2234,7 @@ router.post('/updateReview', (req, res, next) => {
 				}, {
 					'trip_id' : req.body.trip
 				}, (error, results) => {
-					console.log("Here", error, results);
+					//console.log("Here", error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -2225,7 +2266,7 @@ router.post('/updateReview', (req, res, next) => {
 				}, {
 					'trip_id' : req.body.trip
 				}, (error, results) => {
-					console.log(error, results);
+					//console.log(error, results);
 					if (error) {
 						res.send({
 							'statusCode' : 500
@@ -2257,7 +2298,7 @@ router.post('/updateReview', (req, res, next) => {
 });
 
 router.post('/getLoggedInUser', (req, res, next) => {
-	console.log("in session");
+	//console.log("in session");
 	if (req.session !== undefined && req.session.loggedInUser !== undefined) {
 
 		res.send({
@@ -2382,9 +2423,9 @@ router.post('/fetchTopTenProperties', (req, res, next) => {
 	var pattern = patterns.createPattern(p);
 
 	lineReader.eachLine('./public/analytics/admin/log.txt', function(line, isLast, cb) {
-	   console.log(pattern.parseSync(line));
+	   //console.log(pattern.parseSync(line));
 	   if (isLast) {
-	      console.log('All done!');
+	      //console.log('All done!');
 	   }
 	});
 

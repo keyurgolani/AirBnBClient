@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var logger = require("../utils/logger");
 var properties = require('properties-reader')('properties.properties');
+var cache = require('./cache');
 
 // Transactions will be useful for Cart Checkout Query Execution: https://github.com/mysqljs/mysql#transactions
 
@@ -80,12 +81,14 @@ module.exports = {
 	},
 
 	executeQuery : function(sqlQuery, parameters, processResult) {
-		connectionPool.get(function(connectionNumber, connection) {
-			var query = connection.query(sqlQuery, parameters, processResult);
-			connectionPool.release(connectionNumber, connection);
-			console.log(query.sql);
-			logger.logQuery(query.sql);
-		});
+		cache.fetchItem(sqlQuery, parameters, function(parameters, callback) {
+			connectionPool.get(function(connectionNumber, connection) {
+				var query = connection.query(sqlQuery, parameters, callback);
+				connectionPool.release(connectionNumber, connection);
+				console.log(query.sql);
+				logger.logQuery(query.sql);
+			}, processResult);
+		})
 	},
 
 	insertData : function(tableName, insertParameters, processInsertStatus) {

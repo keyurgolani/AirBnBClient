@@ -6,6 +6,7 @@
     "start": "nodemon ./bin/www"
   },
   "dependencies": {
+	"amqp": "^0.2.6",
     "angular": "^1.5.8",
     "angular-animate": "^1.5.8",
     "angular-base64-upload": "^0.1.19",
